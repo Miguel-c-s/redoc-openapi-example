@@ -1,0 +1,192 @@
+openapi: 3.0.0
+servers:
+  - description: My Official API server
+    url: https://mywebsite/api/1/public
+
+info:
+  description: |
+    # Introduction
+      This is where you put your description. You can use markdown to create sections, tables, and everything that markdown enables!
+
+    # Section
+      This is your second  section.
+  version: "1.0.0"
+  title: My Practice API Docs
+  contact:
+    email: myemail@email.com
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  x-logo:
+    url: "Path_to_your_logo"
+    altText: "Title for the logo"
+tags:
+  - name: People
+    description: Each tag creates a section, this is the People section
+  - name: Jobs
+    description: Each tag creates a section, this is the Jobs section
+security:
+  - apiKey: []
+paths:
+  /people:
+    get:
+      tags:
+        - People
+      summary: List all People
+      operationId: listPeople
+      description: |
+        Lists some people
+      parameters:
+        - in: query
+          name: page
+          description: Some pagination parameter
+          schema:
+            type: integer
+            default: 1
+        - in: query
+          name: limit
+          description: Another query parameter
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          $ref: "#/components/responses/ListPeople"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+  /people/{id}:
+    put:
+      tags:
+        - People
+      summary: Updates a person
+      operationId: updatePeople
+      description: |
+        some description
+      parameters:
+        - in: path
+          name: id
+          description: This is a path parameter to the id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/Person"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+  /jobs:
+    post:
+      tags:
+        - Jobs
+      summary: Creates a job
+      operationId: createJob
+      description: |
+        some description
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                  description: The description of the job
+                  example: "a job for people that like to write :)"
+                minAge:
+                  type: number
+                  format: integer
+                  description: The minimum requested age for the job
+                  example: 18
+      responses:
+        "200":
+          $ref: "#/components/responses/Job"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+components:
+  schemas:
+    Person:
+      type: object
+      properties:
+        age:
+          type: number
+          description: age of the person
+        gender:
+          type: string
+          description: The gender of the person
+      required:
+        - age
+        - gender
+    Job:
+      type: object
+      properties:
+        location:
+          type: string
+          description: Location of the job
+        minAge:
+          type: number
+          format: integer
+          description: The minimum requested age for the job
+      required:
+        - age
+        - gender
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+          description: Error code
+        message:
+          type: string
+          description: Error message
+      required:
+        - code
+        - message
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: X-API-KEY
+      in: header
+  responses:
+    Person:
+      description: Person response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Person"
+    Job:
+      description: Job response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Job"
+    ListPeople:
+      description: List of people
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: "#/components/schemas/Person"
+    BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            message: "Bad request message"
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          examples:
+            AuthenticationFailed:
+              value:
+                code: authenticationFailed
+                message: Authentication failed. Invalid credentials.
