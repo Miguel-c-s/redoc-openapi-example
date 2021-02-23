@@ -1,5 +1,5 @@
 # redoc-openapi-example
-A simple YAML example and a script to convert it to HTML with Redoc and code-snippets
+A simple YAML example using OpenAPI 3.0 Specification and a script to convert it to HTML with Redoc and code-snippets
 
 Files:
 - dynamic.html -> Run with live server to see a live version of the documentation
